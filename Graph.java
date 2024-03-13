@@ -1,6 +1,7 @@
 package assign07;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -65,29 +66,86 @@ public class Graph <T> {
         return vertices;
     }
 
-    public List<T> BFS(T start, T goal) {
+    public Vertex<T> BFS(T start, T goal) throws IllegalArgumentException {
         Queue<T> queue = new LinkedList<>();
-        ArrayList<T> visits = new ArrayList<>(vertices.size());
-        Set<T> unvisitedSet = new HashSet<>(vertices.keySet());
         queue.offer(start);
         
-        int i = 0;
-        T current;
+        T current = start;
+
         while (!queue.isEmpty()) {
             current = queue.poll();
-            visits.set(i++, current);
+            if (current.equals(goal)){
+                return vertices.get(current);
+            }
+            if (vertices.get(current).getVisited()) {
+                current = queue.poll();
+                continue;
+            }
+
+            vertices.get(current).setVisited(true);
+
+            for (T val : queue) {
+                if (val.equals(goal)) {
+                    return vertices.get(val);
+                }
+            }
             for (Edge<T> edge : vertices.get(current).getAdjacents()) {
-                if(unvisitedSet.contains(edge)) {
+                if (!edge.getDestination().getVisited()) {
                     queue.offer(edge.getDestinationValue());
-                    unvisitedSet.remove(edge.getDestinationValue());
+                    vertices.get(edge.getDestinationValue()).setVisitedFrom(vertices.get(current));
+                } 
+            }
+        }
+        return vertices.get(current);
+    }
+
+    public List<T> reconstructPath(Vertex<T> start, Vertex<T> end, Vertex<T> initialGoal) throws IllegalArgumentException {
+        if(end == null){
+            throw new IllegalArgumentException("There is no valid path between vertices");
+        }
+        if(!end.getVertexData().equals(initialGoal.getVertexData()))
+            throw new IllegalArgumentException("There is no valid path between vertices");
+        
+        ArrayList<T> returnList = new ArrayList<>();
+        Vertex<T> temp = end;
+    
+        while (temp != null) {
+            returnList.add(temp.getVertexData());
+            temp = temp.getVisitedFrom();
+        }
+
+        Collections.reverse(returnList);
+        return returnList;
+    }
+
+    public List<T> topoSort() throws IllegalArgumentException {
+        Queue<T> queue = new LinkedList<>();
+        List<T> returnList = new LinkedList<>();
+        int numVisited = 0;
+
+        for (Vertex<T> v : vertices.values()) {
+            if (v.getIndegrees() == 0)
+                queue.offer(v.getVertexData());
+        }
+        if (queue.isEmpty())
+            throw new IllegalArgumentException("Graph has a cycle");
+
+        while (!queue.isEmpty()) {
+            returnList.add(queue.peek());
+            Vertex<T> u = vertices.get(queue.poll());
+            numVisited++;
+            for (Edge<T> e : u.getAdjacents()) {
+                vertices.get(e.getDestinationValue()).decrementIndegrees();
+                if (vertices.get(e.getDestinationValue()).getIndegrees() == 0) {
+                    queue.offer(e.getDestinationValue());
                 }
             }
         }
 
-        return visits;
+        if (numVisited < vertices.size())
+            throw new IllegalArgumentException("Graph has a cycle");
+            
+        return returnList;
     }
-
-    // public ArrayList<T> topoSort() {
-
-    // }
+    
 }
