@@ -75,14 +75,24 @@ public class Graph<T> {
             return true;
 
         unvisitedSet.remove(current);
-        if (unvisitedSet.isEmpty())
-            return false;
+        // if (unvisitedSet.isEmpty())
+        // return false;
 
         for (Edge<T> edge : vertices.get(current).getAdjacents()) {
             if (!unvisitedSet.contains(edge.getDestinationValue())) {
                 continue;
             } else {
-                return DFSrecursive(edge.getDestinationValue(), goal, unvisitedSet);
+                boolean bool = DFSrecursive(edge.getDestinationValue(), goal, unvisitedSet);
+                if (bool) {
+                    return true;
+                } else {
+                    if (unvisitedSet.isEmpty()) {
+                        return bool;
+                    } else {
+                        continue;
+                    }
+                }
+
             }
         }
 
@@ -137,6 +147,7 @@ public class Graph<T> {
                 }
             }
         }
+
         return vertices.get(current);
     }
 
@@ -147,7 +158,8 @@ public class Graph<T> {
      * @param end
      * @param initialGoal
      * @return list describing the path taken from start to end
-     * @throws IllegalArgumentException if the end vertex is not equal to the initial goal of the BFS
+     * @throws IllegalArgumentException if the end vertex is not equal to the
+     *                                  initial goal of the BFS
      */
     public List<T> reconstructPath(Vertex<T> start, Vertex<T> end, Vertex<T> initialGoal)
             throws IllegalArgumentException {
@@ -172,7 +184,8 @@ public class Graph<T> {
     }
 
     /**
-     * Topological sorting algorithm that returns an ordered list of the vertices in the graph
+     * Topological sorting algorithm that returns an ordered list of the vertices in
+     * the graph
      * 
      * @return ordered list
      * @throws IllegalArgumentException if there is a cycle in the graph
