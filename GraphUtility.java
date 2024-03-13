@@ -7,17 +7,31 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Contains several methods for solving problems on generic, directed, unweighted, sparse graphs.
+ * Contains several methods for solving problems on generic, directed,
+ * unweighted, sparse graphs.
  * 
  * @author CS 2420 instructors
  * @version Feb 28, 2024
  */
 public class GraphUtility {
 
+	/**
+	 * Uses a depth-first search to determine if there is a path from the vertex
+	 * with srcData to the vertex with dstData in the graph constructed from
+	 * sources and destinations
+	 * 
+	 * @param sources
+	 * @param destinations
+	 * @param srcData
+	 * @param dstData
+	 * @return true if connected, false otherwise
+	 * @throws IllegalArgumentException if there is no vertex with srcData or no
+	 *                                  vertex with dstData
+	 */
 	public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
 			throws IllegalArgumentException {
 		Graph<Type> graph = new Graph<>(sources, destinations);
-		
+
 		if (!graph.getVertices().containsKey(srcData))
 			throw new IllegalArgumentException("Graph does not contain srcData");
 		if (!graph.getVertices().containsKey(dstData))
@@ -26,7 +40,22 @@ public class GraphUtility {
 		return graph.DFS(srcData, dstData);
 	}
 
-	public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
+	/**
+	 * Uses a breadth-first search to find the shortest path between the vertex the
+	 * vertex
+	 * with srcData to the vertex with dstData in the graph constructed from
+	 * sources and destinations
+	 * 
+	 * @param sources
+	 * @param destinations
+	 * @param srcData
+	 * @param dstData
+	 * @return list describing the shortest path between the two vertices
+	 * @throws IllegalArgumentException if there is no vertex with srcData or no
+	 *                                  vertex with dstData or if no path exists
+	 */
+	public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData,
+			Type dstData)
 			throws IllegalArgumentException {
 		Graph<Type> graph = new Graph<>(sources, destinations);
 
@@ -34,11 +63,20 @@ public class GraphUtility {
 			throw new IllegalArgumentException("Graph does not contain srcData");
 		if (!graph.getVertices().containsKey(dstData))
 			throw new IllegalArgumentException("Graph does not contain dstData");
-		
 
-		return graph.reconstructPath(graph.getVertices().get(srcData), graph.BFS(srcData, dstData), graph.getVertices().get(dstData));
+		return graph.reconstructPath(graph.getVertices().get(srcData), graph.BFS(srcData, dstData),
+				graph.getVertices().get(dstData));
 	}
-	
+
+	/**
+	 * Use topological sort to generate a sorted ordering of the vertices in the
+	 * graph constructed from sources and destinations
+	 * 
+	 * @param sources
+	 * @param destinations
+	 * @return ordered list of the vertices in the graph
+	 * @throws IllegalArgumentException if the graph contains a cycle
+	 */
 	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
 		Graph<Type> graph = new Graph<>(sources, destinations);
 
@@ -51,25 +89,26 @@ public class GraphUtility {
 	 * data type is String.
 	 * 
 	 * Accepts many valid "digraph" DOT files (see examples posted on Canvas).
-	 * --accepts \\-style comments 
-	 * --accepts one edge per line or edges terminated with ; 
+	 * --accepts \\-style comments
+	 * --accepts one edge per line or edges terminated with ;
 	 * --does not accept attributes in [] (e.g., [label = "a label"])
 	 * 
-	 * @param filename - name of the DOT file
-	 * @param sources - empty ArrayList, when method returns it is a valid
-	 *        "sources" list that can be passed to the public methods in this
-	 *        class
+	 * @param filename     - name of the DOT file
+	 * @param sources      - empty ArrayList, when method returns it is a valid
+	 *                     "sources" list that can be passed to the public methods
+	 *                     in this
+	 *                     class
 	 * @param destinations - empty ArrayList, when method returns it is a valid
-	 *        "destinations" list that can be passed to the public methods in
-	 *        this class
+	 *                     "destinations" list that can be passed to the public
+	 *                     methods in
+	 *                     this class
 	 */
 	public static void buildListsFromDot(String filename, ArrayList<String> sources, ArrayList<String> destinations) {
 
 		Scanner scan = null;
 		try {
 			scan = new Scanner(new File(filename));
-		}
-		catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 			System.exit(0);
 		}
