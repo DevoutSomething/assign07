@@ -11,4 +11,8 @@ public class Edge <T> {
     public T getDestinationValue() {
         return this.destination.getVertexData();
     }
+
+    public Vertex<T> getDestination() {
+        return this.destination;
+    }
 }

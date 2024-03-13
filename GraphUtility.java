@@ -21,20 +21,28 @@ public class GraphUtility {
 		if (!graph.getVertices().containsKey(srcData))
 			throw new IllegalArgumentException("Graph does not contain srcData");
 		if (!graph.getVertices().containsKey(dstData))
-			throw new IllegalArgumentException("Graph does not contain srcData");
+			throw new IllegalArgumentException("Graph does not contain dstData");
 
 		return graph.DFS(srcData, dstData);
 	}
 
 	public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
 			throws IllegalArgumentException {
-		// FILL IN + ADD METHOD COMMENT
-		return null;
+		Graph<Type> graph = new Graph<>(sources, destinations);
+
+		if (!graph.getVertices().containsKey(srcData))
+			throw new IllegalArgumentException("Graph does not contain srcData");
+		if (!graph.getVertices().containsKey(dstData))
+			throw new IllegalArgumentException("Graph does not contain dstData");
+		
+
+		return graph.reconstructPath(graph.getVertices().get(srcData), graph.BFS(srcData, dstData), graph.getVertices().get(dstData));
 	}
 	
 	public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
-		// FILL IN + ADD METHOD COMMENT
-		return null;
+		Graph<Type> graph = new Graph<>(sources, destinations);
+
+		return graph.topoSort();
 	}
 
 	/**
